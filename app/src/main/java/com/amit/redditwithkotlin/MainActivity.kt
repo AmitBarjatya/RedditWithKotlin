@@ -1,9 +1,9 @@
 package com.amit.redditwithkotlin
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import com.amit.redditwithkotlin.features.NewsFragment
 
@@ -15,37 +15,37 @@ class MainActivity : AppCompatActivity() {
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        if(savedInstanceState == null){
+        if (savedInstanceState == null) {
             changeFragment(NewsFragment())
         }
     }
 
-    fun changeFragment(fragment: Fragment, cleanStack:Boolean = false){
+    fun changeFragment(fragment: Fragment, cleanStack: Boolean = false) {
         val transactionManager = supportFragmentManager.beginTransaction()
-        if (cleanStack){
+        if (cleanStack) {
             clearBackStack()
         }
         transactionManager.setCustomAnimations(
-                R.anim.abc_fade_in,R.anim.abc_fade_out,R.anim.abc_popup_enter,R.anim.abc_popup_exit)
-        transactionManager.replace(R.id.activity_base_content,fragment)
+                R.anim.abc_fade_in, R.anim.abc_fade_out, R.anim.abc_popup_enter, R.anim.abc_popup_exit)
+        transactionManager.replace(R.id.activity_base_content, fragment)
         transactionManager.addToBackStack(null)
         transactionManager.commit()
 
     }
 
-    fun clearBackStack(){
+    fun clearBackStack() {
         val manager = supportFragmentManager
-        if (manager.backStackEntryCount > 0){
-            manager.popBackStack(manager.getBackStackEntryAt(0).id,FragmentManager.POP_BACK_STACK_INCLUSIVE)
+        if (manager.backStackEntryCount > 0) {
+            manager.popBackStack(manager.getBackStackEntryAt(0).id, FragmentManager.POP_BACK_STACK_INCLUSIVE)
 
         }
     }
 
     override fun onBackPressed() {
         val manager = supportFragmentManager
-        if (manager.backStackEntryCount > 1){
+        if (manager.backStackEntryCount > 1) {
             manager.popBackStackImmediate()
-        }else
+        } else
             finish()
     }
 }

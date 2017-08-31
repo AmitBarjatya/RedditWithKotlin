@@ -2,21 +2,21 @@ package com.amit.redditwithkotlin.features
 
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.amit.redditwithkotlin.R
-import com.amit.redditwithkotlin.commons.extensions.RxBaseFragment
+import com.amit.redditwithkotlin.commons.RxBaseFragment
 import com.amit.redditwithkotlin.commons.extensions.inflate
+import com.amit.redditwithkotlin.features.news.adapter.NewsAdapter
 import kotlinx.android.synthetic.main.news_fragment.*
 
 /**
  * Created by Amit Barjatya on 8/31/17.
  */
-class NewsFragment : RxBaseFragment()  {
+class NewsFragment : RxBaseFragment() {
 
-    private val newsList by lazy{
+    private val newsList by lazy {
         news_list
     }
 
@@ -29,5 +29,6 @@ class NewsFragment : RxBaseFragment()  {
 
         newsList.setHasFixedSize(true)
         newsList.layoutManager = LinearLayoutManager(context)
+        newsList.adapter = NewsAdapter()
     }
 }
