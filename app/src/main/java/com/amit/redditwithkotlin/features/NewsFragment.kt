@@ -1,6 +1,7 @@
 package com.amit.redditwithkotlin.features
 
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -10,16 +11,17 @@ import com.amit.redditwithkotlin.commons.RedditNewsItem
 import com.amit.redditwithkotlin.commons.RxBaseFragment
 import com.amit.redditwithkotlin.commons.extensions.inflate
 import com.amit.redditwithkotlin.features.news.adapter.NewsAdapter
+import com.amit.redditwithkotlin.features.news.adapter.NewsManager
 import kotlinx.android.synthetic.main.news_fragment.*
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 
 /**
  * Created by Amit Barjatya on 8/31/17.
  */
 class NewsFragment : RxBaseFragment() {
 
-    private val newsList by lazy {
-        news_list
-    }
+    private val newsManager by lazy{ NewsManager() }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return container?.inflate(R.layout.news_fragment)
@@ -30,26 +32,26 @@ class NewsFragment : RxBaseFragment() {
 
         news_list.setHasFixedSize(true)
         news_list.layoutManager = LinearLayoutManager(context)
-
         initAdapter()
 
         if(savedInstanceState==null){
-            val news = mutableListOf<RedditNewsItem>()
-            for (i in 1..10){
-                news.add(RedditNewsItem(
-                        "author$i",
-                        "title$i",
-                        i,
-                        1457207701L - i * 200,
-                        "http://lorempixel.com/200/200/technics/$i",
-                        "url"
-                ))
-            }
-            (news_list.adapter as NewsAdapter).addNews(news)
+            requestNews()
         }
     }
 
-    fun initAdapter(){
+    private fun requestNews(){
+        val subscription = newsManager.getNews()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe ( {
+                    retrievedNews -> (news_list.adapter as NewsAdapter).addNews(retrievedNews)
+                },{
+                    e -> Snackbar.make(news_list, e.message ?: "", Snackbar.LENGTH_LONG).show()
+                })
+        subscriptions.add(subscription)
+    }
+
+    private fun initAdapter(){
         if(news_list.adapter == null)
             news_list.adapter = NewsAdapter()
     }
