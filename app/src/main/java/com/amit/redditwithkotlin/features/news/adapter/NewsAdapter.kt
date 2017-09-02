@@ -3,6 +3,7 @@ package com.amit.redditwithkotlin.features.news.adapter
 import android.support.v4.util.SparseArrayCompat
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
+import com.amit.redditwithkotlin.commons.RedditNewsItem
 import com.amit.redditwithkotlin.commons.adapter.AdapterConstants
 import com.amit.redditwithkotlin.commons.adapter.ViewType
 import com.amit.redditwithkotlin.commons.adapter.ViewTypeDelegateAdapter
@@ -40,4 +41,26 @@ class NewsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun getItemViewType(position: Int): Int {
         return items[position].getViewType()
     }
+
+    fun addNews(news : List<RedditNewsItem>){
+        val initPosition = items.size - 1
+        items.addAll(initPosition,news)
+        notifyItemRangeInserted(initPosition,initPosition+news.size)
+    }
+
+    fun clearAndAddNews(news : List<RedditNewsItem>){
+        items.clear()
+        notifyItemRangeRemoved(0,getLastPosition())
+        items.addAll(news)
+        items.add(loadingItem)
+        notifyItemRangeInserted(0,items.size)
+    }
+
+    fun getNews() : List<RedditNewsItem>{
+        return items
+                .filter { it.getViewType() == AdapterConstants.NEWS }
+                .map { it as RedditNewsItem }
+    }
+
+    private fun getLastPosition() = if (items.lastIndex == -1) 0 else items.lastIndex
 }

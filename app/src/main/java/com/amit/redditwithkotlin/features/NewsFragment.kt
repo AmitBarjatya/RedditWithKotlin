@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.amit.redditwithkotlin.R
+import com.amit.redditwithkotlin.commons.RedditNewsItem
 import com.amit.redditwithkotlin.commons.RxBaseFragment
 import com.amit.redditwithkotlin.commons.extensions.inflate
 import com.amit.redditwithkotlin.features.news.adapter.NewsAdapter
@@ -27,8 +28,29 @@ class NewsFragment : RxBaseFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        newsList.setHasFixedSize(true)
-        newsList.layoutManager = LinearLayoutManager(context)
-        newsList.adapter = NewsAdapter()
+        news_list.setHasFixedSize(true)
+        news_list.layoutManager = LinearLayoutManager(context)
+
+        initAdapter()
+
+        if(savedInstanceState==null){
+            val news = mutableListOf<RedditNewsItem>()
+            for (i in 1..10){
+                news.add(RedditNewsItem(
+                        "author$i",
+                        "title$i",
+                        i,
+                        1457207701L - i * 200,
+                        "http://lorempixel.com/200/200/technics/$i",
+                        "url"
+                ))
+            }
+            (news_list.adapter as NewsAdapter).addNews(news)
+        }
+    }
+
+    fun initAdapter(){
+        if(news_list.adapter == null)
+            news_list.adapter = NewsAdapter()
     }
 }
