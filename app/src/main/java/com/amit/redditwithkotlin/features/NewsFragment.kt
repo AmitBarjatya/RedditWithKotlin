@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.amit.redditwithkotlin.R
+import com.amit.redditwithkotlin.RedditWithKotlinApp
 import com.amit.redditwithkotlin.commons.RedditNews
 import com.amit.redditwithkotlin.commons.RxBaseFragment
 import com.amit.redditwithkotlin.commons.adapter.InfiniteScrollListener
@@ -16,6 +17,7 @@ import com.amit.redditwithkotlin.features.news.adapter.NewsManager
 import kotlinx.android.synthetic.main.news_fragment.*
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
+import javax.inject.Inject
 
 /**
  * Created by Amit Barjatya on 8/31/17.
@@ -27,7 +29,12 @@ class NewsFragment : RxBaseFragment() {
     }
 
     private var redditNews: RedditNews? = null
-    private val newsManager by lazy{ NewsManager() }
+    @Inject lateinit var newsManager: NewsManager
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        RedditWithKotlinApp.newsComponent.inject(this)
+    }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return container?.inflate(R.layout.news_fragment)

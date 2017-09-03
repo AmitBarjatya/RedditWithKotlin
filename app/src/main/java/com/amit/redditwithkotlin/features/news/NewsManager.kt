@@ -1,16 +1,17 @@
 package com.amit.redditwithkotlin.features.news.adapter
 
 import com.amit.redditwithkotlin.api.NewsAPI
-import com.amit.redditwithkotlin.api.NewsRestApi
 import com.amit.redditwithkotlin.commons.RedditNews
 import com.amit.redditwithkotlin.commons.RedditNewsItem
 import rx.Observable
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Created by Amit Barjatya on 9/3/17.
  */
-
-class NewsManager(private val api : NewsAPI = NewsRestApi()) {
+@Singleton
+class NewsManager @Inject constructor(private val api: NewsAPI) {
     fun getNews(after:String, limit : String = "10") : Observable<RedditNews> {
         return Observable.create{
             subscriber ->
