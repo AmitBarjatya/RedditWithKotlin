@@ -7,8 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.amit.redditwithkotlin.R
-import com.amit.redditwithkotlin.commons.RedditNewsItem
+import com.amit.redditwithkotlin.commons.RedditNews
 import com.amit.redditwithkotlin.commons.RxBaseFragment
+import com.amit.redditwithkotlin.commons.adapter.InfiniteScrollListener
 import com.amit.redditwithkotlin.commons.extensions.inflate
 import com.amit.redditwithkotlin.features.news.adapter.NewsAdapter
 import com.amit.redditwithkotlin.features.news.adapter.NewsManager
@@ -21,6 +22,7 @@ import rx.schedulers.Schedulers
  */
 class NewsFragment : RxBaseFragment() {
 
+    private var redditNews: RedditNews? = null
     private val newsManager by lazy{ NewsManager() }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -31,7 +33,10 @@ class NewsFragment : RxBaseFragment() {
         super.onActivityCreated(savedInstanceState)
 
         news_list.setHasFixedSize(true)
-        news_list.layoutManager = LinearLayoutManager(context)
+        val linearLayout = LinearLayoutManager(context)
+        news_list.layoutManager = linearLayout
+        news_list.clearOnScrollListeners()
+        news_list.addOnScrollListener(InfiniteScrollListener({requestNews()},linearLayout))
         initAdapter()
 
         if(savedInstanceState==null){
@@ -40,11 +45,13 @@ class NewsFragment : RxBaseFragment() {
     }
 
     private fun requestNews(){
-        val subscription = newsManager.getNews()
+        val subscription = newsManager.getNews(redditNews?.after?:"")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe ( {
-                    retrievedNews -> (news_list.adapter as NewsAdapter).addNews(retrievedNews)
+                    retrievedNews ->
+                        redditNews = retrievedNews
+                        (news_list.adapter as NewsAdapter).addNews(retrievedNews.news)
                 },{
                     e -> Snackbar.make(news_list, e.message ?: "", Snackbar.LENGTH_LONG).show()
                 })
