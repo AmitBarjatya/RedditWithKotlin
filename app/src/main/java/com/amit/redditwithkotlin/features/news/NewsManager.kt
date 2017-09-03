@@ -1,6 +1,7 @@
 package com.amit.redditwithkotlin.features.news.adapter
 
-import com.amit.redditwithkotlin.api.RestApi
+import com.amit.redditwithkotlin.api.NewsAPI
+import com.amit.redditwithkotlin.api.NewsRestApi
 import com.amit.redditwithkotlin.commons.RedditNews
 import com.amit.redditwithkotlin.commons.RedditNewsItem
 import rx.Observable
@@ -9,7 +10,7 @@ import rx.Observable
  * Created by Amit Barjatya on 9/3/17.
  */
 
-class NewsManager(private val api : RestApi = RestApi()) {
+class NewsManager(private val api : NewsAPI = NewsRestApi()) {
     fun getNews(after:String, limit : String = "10") : Observable<RedditNews> {
         return Observable.create{
             subscriber ->
